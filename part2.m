@@ -1,3 +1,4 @@
+clear
 %% 8x8 DCT block
 
 % calculate the A matrix
@@ -34,7 +35,8 @@ stepsize = 2;
 quantized = stepsize * round(dct_result/stepsize); 
 
 syms q(x)
-q(x) = round(x/stepsize);
+q(x) = stepsize * round(x/stepsize);
+figure
 fplot(q)
 grid on
 xlabel("Input")
@@ -79,10 +81,10 @@ for i = 0:9
     quantized_p = stepsize * round(dct_peppers/stepsize);
     quantized_h = stepsize * round(dct_harbour/stepsize);
 
-    % reconstruct the images
-    b_rec = blockproc(quantized_b, [8 8], inverse_dct);
-    p_rec = blockproc(quantized_p, [8 8], inverse_dct);
-    h_rec = blockproc(quantized_h, [8 8], inverse_dct);
+%     % reconstruct the images
+%     b_rec = blockproc(quantized_b, [8 8], inverse_dct);
+%     p_rec = blockproc(quantized_p, [8 8], inverse_dct);
+%     h_rec = blockproc(quantized_h, [8 8], inverse_dct);
     
     % calculate the distortion
     d_b(i+1) = immse(quantized_b, dct_boat);
@@ -91,12 +93,9 @@ for i = 0:9
 
     % calculate the bit rate (in this case, the estimation is entropy,
     % because we assumed that we use the ideal code word length of VLC.)
-    e_b(i+1) = entropy(uint8(b_rec));
-    e_p(i+1) = entropy(uint8(p_rec));
-    e_h(i+1) = entropy(uint8(h_rec));
-%     e_b(i+1) = entropy(quantized_b);
-%     e_p(i+1) = entropy(quantized_p);
-%     e_h(i+1) = entropy(quantized_h);
+    e_b(i+1) = entropy(quantized_b);
+    e_p(i+1) = entropy(quantized_p);
+    e_h(i+1) = entropy(quantized_h);
 end
 
 % calculate PSNR
@@ -108,6 +107,7 @@ p_p = 10*log10(255^2./d_p);
 figure
 plot(d_b, e_b)
 hold on
+grid on
 plot(d_h,e_h)
 plot(d_p,e_p)
 legend(["Boats", "Harbour", "Peppers"])
@@ -117,6 +117,7 @@ ylabel("Rate")
 figure
 plot(e_b, p_b)
 hold on
+grid on
 plot(e_h, p_h)
 plot(e_p, p_p)
 legend(["Boats", "Harbour", "Peppers"])

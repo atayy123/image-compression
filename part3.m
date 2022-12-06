@@ -1,3 +1,4 @@
+clear
 %% apply FWT with Daubechies 8-tap filter to image harbour
 % https://wavelets.pybytes.com/wavelet/db8/
 db8 = [-0.00011747678400228192
@@ -19,7 +20,7 @@ db8 = [-0.00011747678400228192
 ];
 
 img = imread("images\harbour512x512.tif");
-imshow(img)
+%imshow(img)
 img = double(img(:));
 
 y = fwt(img, db8);
@@ -30,8 +31,8 @@ inv_db8 = db8(length(db8)-i+1);
 result = inv_fwt(y, inv_db8);
 
 img_reconst = reshape(result, [sqrt(length(result)), sqrt(length(result))]);
-figure
-imshow(uint8(img_reconst))
+% figure
+% imshow(uint8(img_reconst))
 
 % compare the two images if they are equal, to test if our FWT
 % implementation works.
@@ -156,8 +157,8 @@ for i = 0:9
 
     h1low = inv_fwt([q_h2_low; q_h2_high], inv_db8);
     h_recons = inv_fwt([h1low; q_h1_high], inv_db8);
-    figure
-    imshow(uint8(reshape(h_recons, [512, 512])))
+    %figure
+    %imshow(uint8(reshape(h_recons, [512, 512])))
 
     % calculate distortion
     d_b(i+1) = immse(b_recons, img_boat);
@@ -165,15 +166,15 @@ for i = 0:9
     d_h(i+1) = immse(h_recons, img_harbour);
 
     % calculate the entropy (bit-rate estimation)
-    e_b(i+1) = entropy(uint8(b_recons));
-    e_p(i+1) = entropy(uint8(p_recons));
-    e_h(i+1) = entropy(uint8(h_recons));
+    e_b(i+1) = (4*entropy(q_b2_low) + 4*entropy(q_b2_high) + 2*entropy(q_b1_high));
+    e_p(i+1) = (4*entropy(q_p2_low) + 4*entropy(q_p2_high) + 2*entropy(q_p1_high));
+    e_h(i+1) = (4*entropy(q_h2_low) + 4*entropy(q_h2_high) + 2*entropy(q_h1_high));
 end
 
 % compare d and difference between wavelet coefficients and their quantized
 % versions
 
-q_dist = (immse(boat2_high, q_b2_high) + immse(boat1_high, q_b1_high) + immse(boat2_low, q_b2_low))/3;
+q_dist = (4*immse(boat2_high, q_b2_high) + 2*immse(boat1_high, q_b1_high) + 4*immse(boat2_low, q_b2_low))/10;
 disp(d_h(end))
 disp(q_dist)
 
