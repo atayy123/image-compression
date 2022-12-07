@@ -116,9 +116,10 @@ d_b = zeros(1,10);
 d_p = zeros(1,10);
 d_h = zeros(1,10);
 
-e_b = zeros(1,10);
-e_p = zeros(1,10);
-e_h = zeros(1,10);
+% e_b = zeros(1,10);
+% e_p = zeros(1,10);
+% e_h = zeros(1,10);
+entro = zeros(1,10);
 for i = 0:9
     % apply quantization
     stepsize = 2^i;
@@ -150,9 +151,10 @@ for i = 0:9
     d_h(i+1) = immse(h_recons, img_harbour);
 
     % calculate the entropy (bit-rate estimation)
-    e_b(i+1) = entropy(mat2gray(q_b_ll)) + entropy(mat2gray(q_b_hl)) + entropy(mat2gray(q_b_lh)) + entropy(mat2gray(q_b_hh));
-    e_p(i+1) = entropy(mat2gray(q_p_ll)) + entropy(mat2gray(q_p_hl)) + entropy(mat2gray(q_p_lh)) + entropy(mat2gray(q_p_hh));
-    e_h(i+1) = entropy(mat2gray(q_h_ll)) + entropy(mat2gray(q_h_hl)) + entropy(mat2gray(q_h_lh)) + entropy(mat2gray(q_h_hh));
+%     e_b(i+1) = (entropy(mat2gray(q_b_ll)) + entropy(mat2gray(q_b_hl)) + entropy(mat2gray(q_b_lh)) + entropy(mat2gray(q_b_hh)))/4;
+%     e_p(i+1) = (entropy(mat2gray(q_p_ll)) + entropy(mat2gray(q_p_hl)) + entropy(mat2gray(q_p_lh)) + entropy(mat2gray(q_p_hh)))/4;
+%     e_h(i+1) = (entropy(mat2gray(q_h_ll)) + entropy(mat2gray(q_h_hl)) + entropy(mat2gray(q_h_lh)) + entropy(mat2gray(q_h_hh)))/4;
+    entro(i+1) = (entropy(mat2gray([q_b_ll q_p_ll q_h_ll])) + entropy(mat2gray([q_b_hl q_p_hl q_h_hl])) + entropy(mat2gray([q_b_lh q_p_lh q_h_lh])) + entropy(mat2gray([q_b_hh q_p_hh q_h_hh])))/4;
 end
 
 % compare d and difference between wavelet coefficients and their quantized
@@ -173,19 +175,21 @@ p_p = 10*log10(255^2./d_p);
 
 % plot the figures
 figure
-plot(d_b, e_b)
+plot(d_b, entro)
 hold on
-plot(d_h,e_h)
-plot(d_p,e_p)
+grid on
+plot(d_h,entro)
+plot(d_p,entro)
 legend(["Boats", "Harbour", "Peppers"])
 xlabel("Distortion")
 ylabel("Rate")
 
 figure
-plot(e_b, p_b)
+plot(entro, p_b)
 hold on
-plot(e_h, p_h)
-plot(e_p, p_p)
+grid on
+plot(entro, p_h)
+plot(entro, p_p)
 legend(["Boats", "Harbour", "Peppers"])
 ylabel("PSNR")
 xlabel("Rate")

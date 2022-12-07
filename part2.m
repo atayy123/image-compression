@@ -71,9 +71,10 @@ d_b = zeros(1,10);
 d_p = zeros(1,10);
 d_h = zeros(1,10);
 
-e_b = zeros(1,10);
-e_p = zeros(1,10);
-e_h = zeros(1,10);
+% e_b = zeros(1,10);
+% e_p = zeros(1,10);
+% e_h = zeros(1,10);
+entro = zeros(1,10);
 
 for i = 0:9
     stepsize =  2^i;
@@ -101,9 +102,10 @@ for i = 0:9
     ent_h = blockproc(quantized_h, [8 8], ent);
 
     for m = 1:64
-        e_b(i+1) = e_b(i+1) + entropy(mat2gray(ent_b(:,m)));
-        e_p(i+1) = e_p(i+1) + entropy(mat2gray(ent_p(:,m)));
-        e_h(i+1) = e_h(i+1) + entropy(mat2gray(ent_h(:,m)));
+%         e_b(i+1) = e_b(i+1) + entropy(mat2gray(ent_b(:,m)))/64;
+%         e_p(i+1) = e_p(i+1) + entropy(mat2gray(ent_p(:,m)))/64;
+%         e_h(i+1) = e_h(i+1) + entropy(mat2gray(ent_h(:,m)))/64;
+        entro(i+1) = entro(i+1) + entropy(mat2gray([ent_b(:,m); ent_p(:,m); ent_h(:,m)]));
     end
     
 end
@@ -113,23 +115,24 @@ p_b = 10*log10(255^2./d_b);
 p_h = 10*log10(255^2./d_h);
 p_p = 10*log10(255^2./d_p);
 
+entro = entro./64;
 % plot the figures
 figure
-plot(d_b, e_b)
+plot(d_b, entro)
 hold on
 grid on
-plot(d_h,e_h)
-plot(d_p,e_p)
+plot(d_h,entro)
+plot(d_p,entro)
 legend(["Boats", "Harbour", "Peppers"])
 xlabel("Distortion")
 ylabel("Rate")
 
 figure
-plot(e_b, p_b)
+plot(entro, p_b)
 hold on
 grid on
-plot(e_h, p_h)
-plot(e_p, p_p)
+plot(entro, p_h)
+plot(entro, p_p)
 legend(["Boats", "Harbour", "Peppers"])
 ylabel("PSNR")
 xlabel("Rate")
