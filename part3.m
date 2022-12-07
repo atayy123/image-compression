@@ -143,8 +143,6 @@ for i = 0:9
     p_recons = inv_fwt2d(q_p_ll, q_p_hl, q_p_lh, q_p_hh, inv_db8);
 
     h_recons = inv_fwt2d(q_h_ll, q_h_hl, q_h_lh, q_h_hh, inv_db8);
-    %figure
-    %imshow(uint8(reshape(h_recons, [512, 512])))
 
     % calculate distortion
     d_b(i+1) = immse(b_recons, img_boat);
@@ -160,11 +158,11 @@ end
 % compare d and difference between wavelet coefficients and their quantized
 % versions
 
-q_dist = immse(b_ll, q_b_ll) + immse(b_hl, q_b_hl) + immse(b_lh, q_b_lh) + immse(b_hh, q_b_hh);
+q_dist = (immse(b_ll, q_b_ll) + immse(b_hl, q_b_hl) + immse(b_lh, q_b_lh) + immse(b_hh, q_b_hh))/4;
 disp(d_b(end))
 disp(q_dist)
 
-% The distortion between the original and reconstructed image is close to
+% The distortion between the original and reconstructed image is equal to
 % the average of the distortion of the wavelet coefficients and their
 % quantized versions.
 
