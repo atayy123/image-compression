@@ -1,6 +1,6 @@
 % FWT filter bank with direct implementation
 function [y] = fwt(x, h)
-
+    x = reshape(x, [length(x),1]);
     % find wavelet vector from scaling vector
     N = length(h);
     hw = zeros(N,1);
@@ -14,6 +14,7 @@ function [y] = fwt(x, h)
     % extend the input signal
     x_ext = [x; x; x];
 
+    %disp(size(x_ext))
     % apply the filters
     y0 = conv(x_ext, h, "same");
     y0 = y0(length(x)+1:end-length(x));

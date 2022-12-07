@@ -1,12 +1,13 @@
 % inverse FWT
 function [x] = inv_fwt(y, h)
+    y = reshape(y, [length(y),1]);
     % find wavelet vector from scaling vector
     N = length(h);
     hw = zeros(N,1);
     for i = 0:N-1
         hw(i+1) = (-1)^i * h(N-i);
     end
-    %disp(hw)
+    %disp(y)
     % divide the high and low band
     y0 = y(1:length(y)/2);
     y1 = y(length(y)/2+1:end);

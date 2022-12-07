@@ -101,9 +101,9 @@ for i = 0:9
     ent_h = blockproc(quantized_h, [8 8], ent);
 
     for m = 1:64
-        e_b(i+1) = e_b(i+1) + entropy(mat2gray(ent_b(:,m)));
-        e_p(i+1) = e_p(i+1) + entropy(mat2gray(ent_p(:,m)));
-        e_h(i+1) = e_h(i+1) + entropy(mat2gray(ent_h(:,m)));
+        e_b(i+1) = e_b(i+1) + entropy(quantized_b);
+        e_p(i+1) = entropy(quantized_p);
+        e_h(i+1) = entropy(quantized_h);
     end
     
 end
